@@ -1,0 +1,1 @@
+quake2.exe +set game "jabot" +set deathmatch 1 +set maxclients 8 +set ctf 0 +map "q2dm1"
