@@ -28,7 +28,7 @@ in NO WAY supported by Steve Yeager.
 
 #include "ai_nodes_local.h"
 #include "ai_weapons.h"
-#include "AStar.h"
+//#include "AStar.h" //jabot092
 
 
 //bot debug_chase options
@@ -66,8 +66,8 @@ extern	cvar_t				*bot_debugmonster;
 
 //acebot_items.c players table
 //----------------------------------------------------------
-int	num_players;
-edict_t *players[MAX_CLIENTS];		// pointers to all players in the game
+int	num_AIEnemies;
+edict_t *AIEnemies[MAX_EDICTS];		// pointers to all players in the game
 
 
 //Debug & creating and linking nodes
@@ -93,9 +93,9 @@ ai_devel_t	AIDevel;
 //----------------------------------------------------------
 void		CopyToBodyQue (edict_t *ent);
 void		Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
-void ClientThink (edict_t *ent, usercmd_t *ucmd);
-void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles);
-qboolean ClientConnect (edict_t *ent, char *userinfo);
+void		ClientThink (edict_t *ent, usercmd_t *ucmd);
+void		SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles);
+qboolean	ClientConnect (edict_t *ent, char *userinfo);
 
 // bot_spawn.c
 //----------------------------------------------------------
@@ -121,16 +121,16 @@ qboolean	AI_ItemIsReachable(edict_t *self,vec3_t goal);
 // ai_movement.c
 //----------------------------------------------------------
 void AI_ChangeAngle (edict_t *ent);
-qboolean AI_MoveToGoalEntity(edict_t *self, usercmd_t *ucmd);
-qboolean AI_SpecialMove(edict_t *self, usercmd_t *ucmd);
-qboolean AI_CanMove(edict_t *self, int direction);
+qboolean	AI_MoveToGoalEntity(edict_t *self, usercmd_t *ucmd);
+qboolean	AI_SpecialMove(edict_t *self, usercmd_t *ucmd);
+qboolean	AI_CanMove(edict_t *self, int direction);
 qboolean	AI_IsLadder(vec3_t origin, vec3_t v_angle, vec3_t mins, vec3_t maxs, edict_t *passent);
 qboolean	AI_IsStep (edict_t *ent);
 
 // ai_navigation.c
 //----------------------------------------------------------
 int			AI_FindCost(int from, int to, int movetypes);
-int AI_FindClosestReachableNode( vec3_t origin, edict_t *passent, int range, int flagsmask );
+int			AI_FindClosestReachableNode( vec3_t origin, edict_t *passent, int range, int flagsmask );
 void		AI_SetGoal(edict_t *self, int goal_node);
 qboolean	AI_FollowPath(edict_t *self);
 
@@ -185,4 +185,4 @@ void		M_default_Spawn (void);
 void		AI_InitAIWeapons (void);
 
 
-qboolean AI_IsLadder(vec3_t origin, vec3_t v_angle, vec3_t mins, vec3_t maxs, edict_t *passent);
+qboolean	AI_IsLadder(vec3_t origin, vec3_t v_angle, vec3_t mins, vec3_t maxs, edict_t *passent);

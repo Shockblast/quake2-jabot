@@ -83,7 +83,9 @@ int AI_AddNode( vec3_t origin, int flagsmask )
 	nodes[nav.num_nodes].flags = flagsmask;
 	nodes[nav.num_nodes].flags |= AI_FlagsForNode( nodes[nav.num_nodes].origin, player.ent );
 
-	Com_Printf("Dropped Node\n");
+	//Com_Printf("Dropped Node\n");
+	//if( sv_cheats->value )
+		Com_Printf("Dropped Node\n");
 
 	nav.num_nodes++;
 	return nav.num_nodes-1; // return the node added
@@ -109,10 +111,10 @@ void AI_UpdateNodeEdge( int from, int to )
 	} else
 		link = AI_FindLinkType( from, to );
 
-	Com_Printf("Link: %d -> %d. ", from, to);
-	
-	
-	Com_Printf("%s\n", AI_LinkString(link) );
+	//Com_Printf("Link: %d -> %d. ", from, to);
+	//Com_Printf("%s\n", AI_LinkString(link) );
+	//if( sv_cheats->value )
+		Com_Printf("Link: %d -> %d. %s\n", from, to, AI_LinkString(link) );
 }
 
 
@@ -314,8 +316,8 @@ void AI_PathMap( void )
 	int			 closest_node;
 
 	//DROP WATER JUMP NODE (not limited by delayed updates)
-	if ( !player.ent->ai.is_swim && player.last_node != -1 
-		&& player.ent->ai.is_swim != player.ent->ai.was_swim) 
+	if ( !player.ent->is_swim && player.last_node != -1 
+		&& player.ent->is_swim != player.ent->was_swim) 
 	{
 		AI_WaterJumpNode();
 		last_update = level.time + NODE_UPDATE_DELAY; // slow down updates a bit
@@ -345,13 +347,13 @@ void AI_PathMap( void )
 		return;
 
 	// Not on ground, and not in the water, so bail (deeper check by using a splitmodels function)
-	if (!player.ent->ai.is_step )
+	if (!player.ent->is_step )
 	{
-		if ( !player.ent->ai.is_swim ){
+		if ( !player.ent->is_swim ){
 			player.was_falling = true;
 			return;
 		}
-		else if ( player.ent->ai.is_swim )
+		else if ( player.ent->is_swim )
 			player.was_falling = false;
 	}
 
@@ -395,7 +397,7 @@ void AI_PathMap( void )
 	if( closest_node == INVALID )
 	{
 		// Add nodes in the water as needed
-		if( player.ent->ai.is_swim )
+		if( player.ent->is_swim )
 			closest_node = AI_AddNode( player.ent->s.origin, (NODEFLAGS_WATER|NODEFLAGS_FLOAT) );
 		else
 			closest_node = AI_AddNode( player.ent->s.origin, 0 );

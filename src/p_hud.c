@@ -182,7 +182,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	char	*tag;
 
 	//JABot[start]
-	if (ent->ai.is_bot)
+	if (ent->ai)
 		return;
 	//[end]
 

@@ -1062,7 +1062,7 @@ void ClientCommand (edict_t *ent)
 		CTFBoot(ent);
 	} else if (Q_stricmp(cmd, "playerlist") == 0) {
 		CTFPlayerList(ent);
-	} else if (Q_stricmp(cmd, "observer") == 0) {
+	} else if (!Q_stricmp(cmd, "observer" ) || !Q_stricmp(cmd, "chase" ) || !Q_stricmp(cmd, "spectator" )) { //jabot092(2)
 		CTFObserver(ent);
 	}
 //ZOID

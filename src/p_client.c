@@ -201,11 +201,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char		*message2;
 	qboolean	ff;
 
-	//JABot [start]
-	if (self->ai.is_bot){
-		AI_BotObituary (self, inflictor, attacker);
-		return;
-	} //[end]
+	//jabot092(2)
 
 	if (coop->value && attacker->client)
 		meansOfDeath |= MOD_FRIENDLY_FIRE;
@@ -1019,7 +1015,7 @@ void respawn (edict_t *self)
 	if (deathmatch->value || coop->value)
 	{
 //JABot[start]
-		if (self->ai.is_bot){
+		if (self->ai && self->ai->is_bot){
 			BOT_Respawn (self);
 			return;
 		}
@@ -1195,7 +1191,7 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (ent->s.angles, client->v_angle);
 
 	//JABot[start]
-	if( ent->ai.is_bot == true )
+	if( ent->ai && ent->ai->is_bot )
 		return;
 	//JABot[end]
 //ZOID

@@ -1774,6 +1774,8 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 			}
 		}
 
+		*entry = 0; //jabot092
+
 		// right side
 		if (i < total[1]) {
 			cl = &game.clients[sorted[1][i]];
@@ -1827,6 +1829,8 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				cl_ent->solid != SOLID_NOT ||
 				cl_ent->client->resp.ctf_team != CTF_NOTEAM)
 				continue;
+
+			*entry = 0; //jabot092
 
 			if (!k) {
 				k = 1;

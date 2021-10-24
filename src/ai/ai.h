@@ -23,6 +23,9 @@ This program is a modification of the ACE Bot, and is therefore
 in NO WAY supported by Steve Yeager.
 */
 
+//jabot092
+#include "AStar.h"
+
 //	declaration of botedict for the game
 //----------------------------------------------------------
 #define MAX_BOT_ROAMS		128
@@ -67,12 +70,6 @@ typedef struct
 	int				state;			// Bot State (WANDER, MOVE, etc)
 	float			state_combat_timeout;
 
-	qboolean		is_swim;
-	qboolean		is_step;
-	qboolean		is_ladder;
-	qboolean		was_swim;
-	qboolean		was_step;
-
 	// movement
 	vec3_t			move_vector;
 	float			next_move_time;
@@ -88,8 +85,7 @@ typedef struct
 
 	int				tries;
 
-	struct astarpath_s	*path;
-	int				path_position;
+	struct astarpath_s	path; //jabot092
 
 	int				nearest_node_tries;	//for increasing radius of search with each try
 
@@ -103,6 +99,8 @@ qboolean	BOT_ServerCommand (void);
 // ai_main.c
 void		AI_Init(void);
 void		AI_NewMap(void);
+void		G_FreeAI( edict_t *ent );
+void		G_SpawnAI( edict_t *ent );
 
 // ai_items.c
 void		AI_EnemyAdded(edict_t *ent);
@@ -114,7 +112,7 @@ void		BOT_RemoveBot(char *name);
 void		BOT_Respawn (edict_t *self);
 
 //bot_misc.c
-void		AI_BotObituary (edict_t *self, edict_t *inflictor, edict_t *attacker);
+//void		AI_BotObituary (edict_t *self, edict_t *inflictor, edict_t *attacker);
 
 // ai_tools.c
 void		AIDebug_ToogleBotDebug(void);

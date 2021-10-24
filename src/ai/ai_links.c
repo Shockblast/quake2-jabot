@@ -402,7 +402,7 @@ int AI_GravityBoxStep( vec3_t origin, float scale, vec3_t destvec, vec3_t newori
 
 droptofloor:
 
-	while(eternalfall < 20000000) 
+	while(eternalfall < 20000) 
 	{
 		if( gi.pointcontents(neworigin) & MASK_WATER ) {
 
@@ -438,8 +438,8 @@ droptofloor:
 		eternalfall++;
 	}
 
-	gi.error ("ETERNAL FALL\n");
-	return 0;
+	//gi.error ("ETERNAL FALL\n");
+	return LINK_INVALID;	//jabot092
 }
 
 //==========================================
@@ -934,7 +934,8 @@ int AI_IsJumpLink(int n1, int n2)
 
 //==========================================
 // AI_LinkCloseNodes_JumpPass
-// extend radius for jump over movetype links
+// extended radius for jump links. 
+// Standard movetypes nodes must be stored before calling this one
 //==========================================
 int AI_LinkCloseNodes_JumpPass( int start )
 {

@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-
 //==========================================
 // BOT_Commands
 // Special command processor
@@ -48,7 +47,7 @@ qboolean BOT_ServerCommand (void)
 
 	
 
-	if (Q_stricmp (cmd, "addbot") == 0)
+	if( !Q_stricmp (cmd, "addbot") )
 	{ 
 		if(ctf->value) // name, skin, team
 			BOT_SpawnBot ( gi.argv(2), gi.argv(3), gi.argv(4), NULL );
@@ -85,9 +84,10 @@ qboolean BOT_ServerCommand (void)
 // AI_BotObituary
 // Bots can't use stock obituaries cause server doesn't print from them
 //==========================================
+/*
 void AI_BotObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
-/*	int			mod;
+	int			mod;
 	char		message[64];
 	char		message2[64];
 	qboolean	ff;
@@ -164,8 +164,8 @@ void AI_BotObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			}
 		}
 	}
-*/
-}
+
+}*/
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ void debug_printf(char *fmt, ...)
 	for (i=0 ; i<maxclients->value ; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse || cl_ent->ai.is_bot)
+		if (!cl_ent->inuse || cl_ent->ai)
 			continue;
 
 		gi.cprintf(cl_ent,  PRINT_MEDIUM, bigbuffer);
@@ -219,7 +219,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 	va_list		argptr;
 	int len;
 
-	if (ent && (!ent->inuse || ent->ai.is_bot))
+	if (ent && (!ent->inuse || ent->ai))
 		return;
 
 	va_start (argptr,fmt);
@@ -239,7 +239,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 	va_list		argptr;
 	int len;
 
-	if (!ent->inuse || ent->ai.is_bot)
+	if (!ent->inuse || ent->ai)
 		return;
 	
 	va_start (argptr,fmt);
@@ -271,7 +271,7 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 	for (i=0 ; i<maxclients->value ; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse || cl_ent->ai.is_bot)
+		if (!cl_ent->inuse || cl_ent->ai)
 			continue;
 
 		gi.cprintf(cl_ent, printlevel, bigbuffer);

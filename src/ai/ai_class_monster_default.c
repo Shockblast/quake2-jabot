@@ -46,39 +46,39 @@ void M_default_Move(edict_t *self, usercmd_t *ucmd)
 	int	current_link_type = 0;
 //	int i;
 
-	current_node_flags = nodes[self->ai.current_node].flags;
-	next_node_flags = nodes[self->ai.next_node].flags;
-	if( AI_PlinkExists( self->ai.current_node, self->ai.next_node ))
+	current_node_flags = nodes[self->ai->current_node].flags;
+	next_node_flags = nodes[self->ai->next_node].flags;
+	if( AI_PlinkExists( self->ai->current_node, self->ai->next_node ))
 	{
-		current_link_type = AI_PlinkMoveType( self->ai.current_node, self->ai.next_node );
+		current_link_type = AI_PlinkMoveType( self->ai->current_node, self->ai->next_node );
 		//Com_Printf("%s\n", AI_LinkString( current_link_type ));
 	}
 
 	// Falling off ledge
-	if(!self->groundentity && !self->ai.is_step && !self->ai.is_swim )
+	if(!self->groundentity && !self->is_step && !self->is_swim )
 	{
 		AI_ChangeAngle(self);
 		if (current_link_type == LINK_JUMPPAD ) {
 			ucmd->forwardmove = 100;
 		} else if( current_link_type == LINK_JUMP ) {
-			self->velocity[0] = self->ai.move_vector[0] * 280;
-			self->velocity[1] = self->ai.move_vector[1] * 280;
+			self->velocity[0] = self->ai->move_vector[0] * 280;
+			self->velocity[1] = self->ai->move_vector[1] * 280;
 		} else {
-			self->velocity[0] = self->ai.move_vector[0] * 160;
-			self->velocity[1] = self->ai.move_vector[1] * 160;
+			self->velocity[0] = self->ai->move_vector[0] * 160;
+			self->velocity[1] = self->ai->move_vector[1] * 160;
 		}
 		return;
 	}
 
 
 	// swimming
-	if( self->ai.is_swim )
+	if( self->is_swim )
 	{
 		// We need to be pointed up/down
 		AI_ChangeAngle(self);
 
-		//if( !(trap_PointContents(nodes[self->ai.next_node].origin) & MASK_WATER) ) // Exit water
-		if( !(gi.pointcontents(nodes[self->ai.next_node].origin) & MASK_WATER) ) // Exit water
+		//if( !(trap_PointContents(nodes[self->ai->next_node].origin) & MASK_WATER) ) // Exit water
+		if( !(gi.pointcontents(nodes[self->ai->next_node].origin) & MASK_WATER) ) // Exit water
 			ucmd->upmove = 400;
 		
 		ucmd->forwardmove = 300;
@@ -230,18 +230,18 @@ void M_default_FireWeapon (edict_t *self)
 
 
 	// modify attack angles based on accuracy (mess this up to make the bot's aim not so deadly)
-	target[0] += (random()-0.5) * ((MAX_BOT_SKILL - self->ai.pers.skillLevel) *2);
-	target[1] += (random()-0.5) * ((MAX_BOT_SKILL - self->ai.pers.skillLevel) *2);
+	target[0] += (random()-0.5) * ((MAX_BOT_SKILL - self->ai->pers.skillLevel) *2);
+	target[1] += (random()-0.5) * ((MAX_BOT_SKILL - self->ai->pers.skillLevel) *2);
 
 	// Set direction
-	VectorSubtract (target, self->s.origin, self->ai.move_vector);
-	vectoangles (self->ai.move_vector, angles);
+	VectorSubtract (target, self->s.origin, self->ai->move_vector);
+	vectoangles (self->ai->move_vector, angles);
 	VectorCopy(angles,self->s.angles);
 
 
 	// Set the attack 
 	firedelay = random()*(MAX_BOT_SKILL*1.8);
-	if (firedelay > (MAX_BOT_SKILL - self->ai.pers.skillLevel) && M_default_CheckShot(self, target))
+	if (firedelay > (MAX_BOT_SKILL - self->ai->pers.skillLevel) && M_default_CheckShot(self, target))
 	{
 		vec3_t	start, forward, right;
 		AngleVectors (self->s.angles, forward, right, NULL);
@@ -264,29 +264,29 @@ void M_default_WeightPlayers(edict_t *self)
 	int i;
 
 	//clear
-	memset(self->ai.status.playersWeights, 0, sizeof (self->ai.status.playersWeights));
+	memset(self->ai->status.playersWeights, 0, sizeof (self->ai->status.playersWeights));
 
-	for(i=0;i<num_players;i++)
+	for(i=0;i<num_AIEnemies;i++)
 	{
-		if (players[i] == NULL)
+		if( AIEnemies[i] == NULL)
 			continue;
 
-		if(players[i] == self)
+		if( AIEnemies[i] == self)
 			continue;
 
-		if( !strcmp(players[i]->classname, "monster") ) {
-			self->ai.status.playersWeights[i] = 0.0f;
+		if( !strcmp(AIEnemies[i]->classname, "monster") ) {
+			self->ai->status.playersWeights[i] = 0.0f;
 			continue;
 		}
 
 		//ignore spectators and dead players
-		if(players[i]->svflags & SVF_NOCLIENT || players[i]->deadflag) {
-			self->ai.status.playersWeights[i] = 0.0f;
+		if( AIEnemies[i]->svflags & SVF_NOCLIENT || AIEnemies[i]->deadflag) {
+			self->ai->status.playersWeights[i] = 0.0f;
 			continue;
 		}
 
 		//every player has some value
-		self->ai.status.playersWeights[i] = 0.3;
+		self->ai->status.playersWeights[i] = 0.3;
 	}
 }
 
@@ -298,12 +298,12 @@ void M_default_WeightPlayers(edict_t *self)
 void M_default_WeightInventory(edict_t *self)
 {
 	//reset with persistant values
-	memcpy(self->ai.status.inventoryWeights, self->ai.pers.inventoryWeights, sizeof(self->ai.pers.inventoryWeights));
+	memcpy(self->ai->status.inventoryWeights, self->ai->pers.inventoryWeights, sizeof(self->ai->pers.inventoryWeights));
 }
 
 //==========================================
 // M_default_UpdateStatus
-// Set up status for AI. Happens before M_default_RunFrame
+// Set up status for ai-> Happens before M_default_RunFrame
 //==========================================
 void M_default_UpdateStatus( edict_t *self )
 {
@@ -555,8 +555,7 @@ qboolean M_default_movestep (edict_t *self, usercmd_t *ucmd)
 		//speed is 0
 		VectorCopy( self->s.origin, self->s.old_origin );
 		//relink
-		//trap_LinkEntity (self);
-		gi.linkentity(self);
+		gi.linkentity(self);//trap_LinkEntity (self);
 		G_TouchTriggers (self);
 		return true;
 	}
@@ -564,7 +563,7 @@ qboolean M_default_movestep (edict_t *self, usercmd_t *ucmd)
 
 	VectorCopy( self->s.origin, self->s.old_origin );
 
-	//VectorCopy( self->ai.move_vector, movedir );
+	//VectorCopy( self->ai->move_vector, movedir );
 	VectorNormalize( movedir );
 
 	movetype = M_default_GravityBoxStep( self->s.origin, speed, movedir, neworigin, self->mins, self->maxs, MASK_AISOLID, self );
@@ -578,8 +577,7 @@ qboolean M_default_movestep (edict_t *self, usercmd_t *ucmd)
 		VectorSubtract(self->s.origin, self->s.old_origin, self->velocity);
 
 		//relink
-		//trap_LinkEntity (self);
-		gi.linkentity(self);
+		gi.linkentity(self);//trap_LinkEntity (self);
 		G_TouchTriggers (self);
 		return true;
 	}
@@ -588,10 +586,8 @@ qboolean M_default_movestep (edict_t *self, usercmd_t *ucmd)
 }
 
 
-qboolean M_walkmove (edict_t *ent, float yaw, float dist);
+//void G_SetPModelFrame (edict_t *ent);
 void M_WorldEffects (edict_t *ent);
-void M_droptofloor (edict_t *ent);
-SV_StepDirection (edict_t *ent, float yaw, float dist);
 //==========================================
 // M_default_RunFrame
 //
@@ -607,30 +603,30 @@ void M_default_RunFrame( edict_t *self )
 	{
 		M_default_ChooseWeapon( self );
 		M_default_FireWeapon( self );
-		self->ai.state = BOT_STATE_ATTACK;
-		self->ai.state_combat_timeout = level.time + 1.0;
+		self->ai->state = BOT_STATE_ATTACK;
+		self->ai->state_combat_timeout = level.time + 1.0;
 	
-	} else if( self->ai.state == BOT_STATE_ATTACK && 
-		level.time > self->ai.state_combat_timeout)
+	} else if( self->ai->state == BOT_STATE_ATTACK && 
+		level.time > self->ai->state_combat_timeout)
 	{
 		//Jalfixme: change to: AI_SetUpStateMove(self);
-		self->ai.state = BOT_STATE_MOVE;
+		self->ai->state = BOT_STATE_MOVE;
 	}
 
 	// Execute the move, or wander
-	if( self->ai.state == BOT_STATE_MOVE )
+	if( self->ai->state == BOT_STATE_MOVE )
 		M_default_Move( self, &ucmd );
 
-	else if(self->ai.state == BOT_STATE_ATTACK)
+	else if(self->ai->state == BOT_STATE_ATTACK)
 		M_default_CombatMovement( self, &ucmd );
 
-	else if ( self->ai.state == BOT_STATE_WANDER )
+	else if ( self->ai->state == BOT_STATE_WANDER )
 		M_default_Wander( self, &ucmd );
 
 
 	//move a step
 	if( M_default_movestep ( self, &ucmd ) )
-		self->ai.bloqued_timeout = level.time + 10.0;
+		self->ai->bloqued_timeout = level.time + 10.0;
 
 	M_WorldEffects (self);
 
@@ -649,23 +645,23 @@ void M_default_RunFrame( edict_t *self )
 void M_default_InitPersistant(edict_t *self)
 {
 	//set 'class' functions
-	self->ai.pers.RunFrame = M_default_RunFrame;
-	self->ai.pers.UpdateStatus = M_default_UpdateStatus;
-	self->ai.pers.bloquedTimeout = M_default_BloquedTimeout;
-	self->ai.pers.deadFrame = M_default_DeadFrame;
+	self->ai->pers.RunFrame = M_default_RunFrame;
+	self->ai->pers.UpdateStatus = M_default_UpdateStatus;
+	self->ai->pers.bloquedTimeout = M_default_BloquedTimeout;
+	self->ai->pers.deadFrame = M_default_DeadFrame;
 
 	//skill
-	self->ai.pers.skillLevel = (int)(random()*MAX_BOT_SKILL);
-	if (self->ai.pers.skillLevel > MAX_BOT_SKILL)	//fix if off-limits
-		self->ai.pers.skillLevel =  MAX_BOT_SKILL;
-	else if (self->ai.pers.skillLevel < 0)
-		self->ai.pers.skillLevel =  0;
+	self->ai->pers.skillLevel = (int)(random()*MAX_BOT_SKILL);
+	if (self->ai->pers.skillLevel > MAX_BOT_SKILL)	//fix if off-limits
+		self->ai->pers.skillLevel =  MAX_BOT_SKILL;
+	else if (self->ai->pers.skillLevel < 0)
+		self->ai->pers.skillLevel =  0;
 
 	//available moveTypes for this class
-	self->ai.pers.moveTypesMask = (LINK_MOVE|LINK_STAIRS|LINK_WATER|LINK_WATERJUMP);
+	self->ai->pers.moveTypesMask = (LINK_MOVE|LINK_STAIRS|LINK_WATER|LINK_WATERJUMP);
 
 	//Persistant Inventory Weights (0 = can not pick)
-	memset(self->ai.pers.inventoryWeights, 0, sizeof (self->ai.pers.inventoryWeights));
+	memset(self->ai->pers.inventoryWeights, 0, sizeof (self->ai->pers.inventoryWeights));
 }
 
 
@@ -704,6 +700,8 @@ void M_default_Spawn (void)
 
 	ent = G_Spawn();
 
+	G_SpawnAI (ent); //jabot092(2)
+
 	//spawn at a spawnpoint
 	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 	spawn_origin[2] += 8;
@@ -736,11 +734,14 @@ void M_default_Spawn (void)
 	VectorCopy (maxs, ent->maxs);
 	VectorClear (ent->velocity);
 	
+
 	ent->s.modelindex = gi.modelindex("models/monsters/infantry/tris.md2");
+
 
 	// clear entity state values
 	ent->s.effects = 0;
 	ent->s.frame = 0;
+
 	VectorCopy (spawn_origin, ent->s.origin);
 	VectorCopy (ent->s.origin, ent->s.old_origin);
 

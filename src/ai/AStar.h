@@ -7,7 +7,7 @@
 typedef struct astarpath_s
 {
 	int numNodes;
-	int nodes[MAX_NODES];
+	short int nodes[2048];//MAX_NODES jabot092(2)
 	int originNode;
 	int goalNode;
 

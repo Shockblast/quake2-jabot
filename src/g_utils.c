@@ -461,6 +461,7 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 
+	G_FreeAI (ed); //jabot092(2)
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
 	ed->freetime = level.time;

@@ -982,7 +982,7 @@ void Touch_DoorTrigger (edict_t *self, edict_t *other, cplane_t *plane, csurface
 	if (other->health <= 0)
 		return;
 
-	if (!(other->svflags & SVF_MONSTER) && (!other->client))
+	if (!(other->svflags & SVF_MONSTER) && (!other->client) && (!other->ai) ) //jabot092(2)
 		return;
 
 	if ((self->owner->spawnflags & DOOR_NOMONSTER) && (other->svflags & SVF_MONSTER))

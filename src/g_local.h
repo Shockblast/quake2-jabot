@@ -1157,7 +1157,12 @@ struct edict_s
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
 
-	ai_handle_t		ai;		//JABot
+	ai_handle_t		*ai;		//jabot092(2)
+	qboolean		is_swim;	//AI_CategorizePosition
+	qboolean		is_step;
+	qboolean		is_ladder;
+	qboolean		was_swim;
+	qboolean		was_step;
 };
 
 //ZOID

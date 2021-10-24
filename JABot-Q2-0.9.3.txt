@@ -1,0 +1,7 @@
+JABot-Q2-0.9.3 - Manteinance release
+
+- Fixed crashes cause of memory allocation.
+- Fixed crashes caused by jump pad entities without a target
+- Fixed aethernal loops freezes in extremely rare situtations inside AI_FindLink
+- Fixed bots scores in DM scoreboards
+- Improved nodes determination in doors and plats
